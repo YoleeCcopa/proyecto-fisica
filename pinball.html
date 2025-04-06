@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pinball</title>
+    <link rel="stylesheet" href="pinball.css">
+</head>
+
+<body>
+    <div class="container">
+        <button class="trigger left-trigger">Tap!</button>
+        <button class="trigger right-trigger">Tap!</button>
+        
+        <div class="score ball-velocity">
+            Velocidad de la pelota<br><span></span>
+        </div>
+        <div class="score current-score">
+            Puntaje<br><span></span>
+        </div>
+        <div class="score high-score">
+            Puntaje mas alto<br><span></span>
+        </div>
+        <div class="score physics-inputs">
+            Ajustes
+            <label for="inputNumVelocity">Velocidad inicial</label>
+            <input id="inputNumVelocity" type="number"  value="25">
+            <label for="inputNumGravity">Gravedad</label>
+            <input id="inputNumGravity" type="number" value="0.81">
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.rawgit.com/schteppe/poly-decomp.js/1ef946f1/build/decomp.min.js"></script>
+    <script src="https://cdn.rawgit.com/liabru/matter-js/0895d81f/build/matter.min.js"></script>
+    <script src="https://cdn.rawgit.com/liabru/matter-attractors/c470ed42/build/matter-attractors.min.js"></script>
+    <script src="pinball.js"></script>
+</body>
+
+</html>
