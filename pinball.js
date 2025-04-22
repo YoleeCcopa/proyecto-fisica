@@ -36,14 +36,17 @@
 	let $inputGravity = $('#inputNumGravity');
     let $inputFriction = $('#inputNumFriction');
 	let $inputVelocity = $('#inputNumVelocity');
+	let friction = 0.01;
+
 
 	// score elements
 	let $currentScore = $('.current-score span');
 	let $highScore = $('.high-score span');
+	let $livesDisplay = $('.lives-playes span');
 	let $currentVelocity = $('.ball-velocity span');
 
 	// shared variables
-	let currentScore, highScore, currentVelocity;
+	let currentScore, highScore, currentVelocity, lives;
 	let engine, world, render, pinball, stopperGroup;
 	let leftPaddle, leftUpStopper, leftDownStopper, isLeftPaddleUp;
 	let rightPaddle, rightUpStopper, rightDownStopper, isRightPaddleUp;
@@ -82,6 +85,9 @@
 		});
 		Matter.Render.run(render);
 
+		highScore = parseInt(localStorage.getItem('highScore')) || 0;
+		$highScore.text(highScore);
+
 		// runner
 		let runner = Matter.Runner.create();
 		Matter.Runner.run(runner, engine);
@@ -93,6 +99,7 @@
 		currentScore = 0;
 		highScore = 0;
 		currentVelocity = 0;
+		lives = 4;
 		isLeftPaddleUp = false;
 		isRightPaddleUp = false;
 	}
@@ -250,6 +257,9 @@
 			collisionFilter: {
 				group: stopperGroup
 			},
+			friction: friction,
+    		frictionAir: friction,
+   			restitution: 0.9,
 			render: {
 				fillStyle: COLOR.PINBALL
 			}
@@ -269,6 +279,14 @@
         $inputVelocity.on('input', function () { // change gravity value
             initVelocity = parseFloat($(this).val());
         });
+
+		$inputFriction.on('input', function () {
+			friction = parseFloat($(this).val());
+			if (!isNaN(friction)) {
+				pinball.friction = friction;
+				pinball.frictionAir = friction;
+			}
+		});
     }
 
 	function createEvents() {
@@ -308,9 +326,11 @@
             prevVy = vy;
             
 			// bumpers can quickly multiply velocity, so keep that in check
+			let cappedVx = Math.max(Math.min(vx, maxVelocity), -maxVelocity);
+			let cappedVy = Math.max(Math.min(vy, maxVelocity), -maxVelocity);
 			Matter.Body.setVelocity(pinball, {
-				x: vx,
-				y: vy,
+			x: cappedVx,
+			y: cappedVy
 			});
 
 			// cheap way to keep ball from going back down the shooter lane
@@ -379,11 +399,18 @@
 
 	function launchPinball() {
 		updateScore(0);
+		if (lives > 1) {
+			lives--;
+			$livesDisplay.text(lives);
+		} else {
+			alert("¡Juego terminado!");
+			lives = 3;
+			$livesDisplay.text(lives);
+			highScore = 0;
+			localStorage.removeItem('highScore');
+		}
 		Matter.Body.setPosition(pinball, { x: 465, y: 765 });
-
-        initVelocity = -Math.abs(initVelocity.toFixed(3));
-
-		Matter.Body.setVelocity(pinball, { x: 0, y: initVelocity });
+		Matter.Body.setVelocity(pinball, { x: 0, y: -Math.abs(initVelocity) });
 		Matter.Body.setAngularVelocity(pinball, 0);
 	}
 
@@ -403,6 +430,7 @@
 
 		highScore = Math.max(currentScore, highScore);
 		$highScore.text(highScore);
+		localStorage.setItem('highScore', highScore);
 	}
 
 	// matter.js has a built in random range function, but it is deterministic

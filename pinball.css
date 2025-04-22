@@ -37,22 +37,26 @@ body {
 }
 
 .ball-velocity {
-	top: 10px;
+	top: 20px;
+}
+
+.lives-playes {
+	top: 110px;
 }
 
 .current-score {
-    top: 110px;
+    top: 210px;
 }
 
 .high-score {
-    top: 210px;
+    top: 310px;
 }
 
 .physics-inputs {
     display: flex;
     width: 180px;
     flex-wrap: wrap;
-    top: 310px;
+    top: 410px;
     font-weight: 600;
 }
 
