@@ -56,6 +56,26 @@
 		createPinball();
 		createEvents();
 	}
+	
+	// Validate inputs
+	function validatePhysicsInputs() {
+		for (let id in defaultValue) {
+			const input = document.getElementById(id);
+			const value = parseFloat(input.value);
+			if (isNaN(value)) {
+				input.value = defaultValue[id];
+			}
+		}
+	}
+	
+	function getValidatedSettings() {
+		validatePhysicsInputs();
+		return {
+			velocity: parseFloat(document.getElementById('inputNumVelocity').value),
+			gravity: parseFloat(document.getElementById('inputNumGravity').value),
+			friction: parseFloat(document.getElementById('inputNumFriction').value)
+		};;
+	}
 
 	function init() {
 		const settings = getValidatedSettings();
@@ -266,28 +286,6 @@
 		});
 		Matter.World.add(world, pinball);
 		launchPinball();
-	}
-	
-	// Validate inputs
-	function validatePhysicsInputs() {
-		for (let id in defaultValue) {
-			const input = document.getElementById(id);
-			const value = parseFloat(input.value);
-			if (isNaN(value)) {
-				input.value = defaultValue[id];
-			}
-		}
-	}
-	
-	function getValidatedSettings() {
-		validatePhysicsInputs();
-		let a = {
-			velocity: parseFloat(document.getElementById('inputNumVelocity').value),
-			gravity: parseFloat(document.getElementById('inputNumGravity').value),
-			friction: parseFloat(document.getElementById('inputNumFriction').value)
-		};
-		console.log(a);
-		return a;
 	}
 
 	function createEvents() {
