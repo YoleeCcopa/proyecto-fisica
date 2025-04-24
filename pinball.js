@@ -27,7 +27,7 @@
 
 	const WIREFRAMES = false;
 	let bumperBounce = 1.5;
-	let gravity = 0.81;
+	let gravity = 0.98;
 	let paddlePull = 0.002;
 	let maxVelocity = 50;
 	let initVelocity = 25;
