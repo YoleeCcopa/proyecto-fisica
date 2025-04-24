@@ -60,8 +60,34 @@ body {
     font-weight: 600;
 }
 
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 .physics-inputs input {
+	margin-top: 5px;
     width: 100%;
+	background-color: transparent;
+	color: #dee2e6;
+	font-size: 2rem;
+	border: #dee2e6 solid 3px;
+	padding: 0.4rem;
+	border-radius: 0.3rem;
+	outline: none;
+	transition: ease 0.4s;
+}
+
+.physics-inputs input:focus {
+	border: #15aabf solid 3px;
+	border-radius: 0.3rem;
 }
 
 .physics-inputs label {

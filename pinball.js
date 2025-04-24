@@ -329,8 +329,8 @@
 			let cappedVx = Math.max(Math.min(vx, maxVelocity), -maxVelocity);
 			let cappedVy = Math.max(Math.min(vy, maxVelocity), -maxVelocity);
 			Matter.Body.setVelocity(pinball, {
-			x: cappedVx,
-			y: cappedVy
+				x: cappedVx,
+				y: cappedVy
 			});
 
 			// cheap way to keep ball from going back down the shooter lane
@@ -352,6 +352,7 @@
                 $currentVelocity.text(speed.toFixed(2));
             }
 		});
+		
 
 		// mouse drag (god mode for grabbing pinball)
 		Matter.World.add(world, Matter.MouseConstraint.create(engine, {
