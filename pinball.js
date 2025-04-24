@@ -55,7 +55,6 @@
 	let rightPaddle, rightUpStopper, rightDownStopper, isRightPaddleUp;
 	
 	function load() {
-        configEnviroment();
 		init();
 		createStaticBodies();
 		createPaddles();
@@ -65,6 +64,7 @@
 
 	function init() {
 		const settings = getValidatedSettings();
+
 		// engine (shared)
 		engine = Matter.Engine.create();
 
@@ -272,29 +272,6 @@
 		Matter.World.add(world, pinball);
 		launchPinball();
 	}
-
-    function configEnviroment() {
-		const settings = getValidatedSettings();
-		
-        $inputGravity.on('input', function () { // change gravity value
-            settings.gravity = parseFloat($(this).val());
-            if (!isNaN(settings.gravity)) {
-                engine.world.gravity.y = settings.gravity;
-            }
-        });
-        
-        $inputVelocity.on('input', function () { // change gravity value
-            settings.velocity = parseFloat($(this).val());
-        });
-
-		$inputFriction.on('input', function () {
-			settings.friction = parseFloat($(this).val());
-			if (!isNaN(settings.friction)) {
-				pinball.friction = settings.friction;
-				pinball.frictionAir = settings.friction;
-			}
-		});
-    }
 	
 	// Validate inputs
 	function validatePhysicsInputs() {
