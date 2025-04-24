@@ -64,8 +64,8 @@
 			const value = parseFloat(input.value);
 			if (isNaN(value)) {
 				input.value = defaultValue[id];
-			}
-		}
+			};
+		};
 	}
 	
 	function getValidatedSettings() {
@@ -74,7 +74,7 @@
 			velocity: parseFloat(document.getElementById('inputNumVelocity').value),
 			gravity: parseFloat(document.getElementById('inputNumGravity').value),
 			friction: parseFloat(document.getElementById('inputNumFriction').value)
-		};;
+		};
 	}
 
 	function init() {
