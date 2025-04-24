@@ -27,17 +27,15 @@
 
 	const WIREFRAMES = false;
 	let bumperBounce = 1.5;
-	let gravity = 0.81;
 	let paddlePull = 0.002;
 	let maxVelocity = 50;
-	let initVelocity = 25;
 
-    // inputs for env
-	let $inputGravity = $('#inputNumGravity');
-    let $inputFriction = $('#inputNumFriction');
-	let $inputVelocity = $('#inputNumVelocity');
-	let friction = 0.01;
-
+	// Default values for inputs
+	const defaultValue = {
+		inputNumVelocity: 26,
+		inputNumGravity: 0.98,
+		inputNumFriction: 0.01
+	};
 
 	// score elements
 	let $currentScore = $('.current-score span');
@@ -50,17 +48,38 @@
 	let engine, world, render, pinball, stopperGroup;
 	let leftPaddle, leftUpStopper, leftDownStopper, isLeftPaddleUp;
 	let rightPaddle, rightUpStopper, rightDownStopper, isRightPaddleUp;
-
+	
 	function load() {
 		init();
 		createStaticBodies();
 		createPaddles();
 		createPinball();
-        configEnviroment();
 		createEvents();
+	}
+	
+	// Validate inputs
+	function validatePhysicsInputs() {
+		for (let id in defaultValue) {
+			const input = document.getElementById(id);
+			const value = parseFloat(input.value);
+			if (isNaN(value)) {
+				input.value = defaultValue[id];
+			};
+		};
+	}
+	
+	function getValidatedSettings() {
+		validatePhysicsInputs();
+		return {
+			velocity: parseFloat(document.getElementById('inputNumVelocity').value),
+			gravity: parseFloat(document.getElementById('inputNumGravity').value),
+			friction: parseFloat(document.getElementById('inputNumFriction').value)
+		};
 	}
 
 	function init() {
+		const settings = getValidatedSettings();
+
 		// engine (shared)
 		engine = Matter.Engine.create();
 
@@ -70,7 +89,7 @@
 			min: { x: 0, y: 0},
 			max: { x: 700, y: 800 }
 		};
-		world.gravity.y = gravity; // simulate rolling on a slanted table
+		world.gravity.y = settings.gravity; // simulate rolling on a slanted table
 
 		// render (shared)
 		render = Matter.Render.create({
@@ -99,7 +118,7 @@
 		currentScore = 0;
 		highScore = 0;
 		currentVelocity = 0;
-		lives = 4;
+		lives = 3;
 		isLeftPaddleUp = false;
 		isRightPaddleUp = false;
 	}
@@ -251,14 +270,15 @@
 	}
 
 	function createPinball() {
+		const settings = getValidatedSettings();
 		// x/y are set to when pinball is launched
 		pinball = Matter.Bodies.circle(0, 0, 14, {
 			label: 'pinball',
 			collisionFilter: {
 				group: stopperGroup
 			},
-			friction: friction,
-    		frictionAir: friction,
+			friction: settings.friction,
+    		frictionAir: settings.friction,
    			restitution: 0.9,
 			render: {
 				fillStyle: COLOR.PINBALL
@@ -267,27 +287,6 @@
 		Matter.World.add(world, pinball);
 		launchPinball();
 	}
-
-    function configEnviroment() {
-        $inputGravity.on('input', function () { // change gravity value
-            gravity = parseFloat($(this).val());
-            if (!isNaN(gravity)) {
-                engine.world.gravity.y = gravity;
-            }
-        });
-        
-        $inputVelocity.on('input', function () { // change gravity value
-            initVelocity = parseFloat($(this).val());
-        });
-
-		$inputFriction.on('input', function () {
-			friction = parseFloat($(this).val());
-			if (!isNaN(friction)) {
-				pinball.friction = friction;
-				pinball.frictionAir = friction;
-			}
-		});
-    }
 
 	function createEvents() {
 		// events for when the pinball hits stuff
@@ -329,8 +328,8 @@
 			let cappedVx = Math.max(Math.min(vx, maxVelocity), -maxVelocity);
 			let cappedVy = Math.max(Math.min(vy, maxVelocity), -maxVelocity);
 			Matter.Body.setVelocity(pinball, {
-			x: cappedVx,
-			y: cappedVy
+				x: cappedVx,
+				y: cappedVy
 			});
 
 			// cheap way to keep ball from going back down the shooter lane
@@ -352,6 +351,7 @@
                 $currentVelocity.text(speed.toFixed(2));
             }
 		});
+		
 
 		// mouse drag (god mode for grabbing pinball)
 		Matter.World.add(world, Matter.MouseConstraint.create(engine, {
@@ -398,10 +398,12 @@
 	}
 
 	function launchPinball() {
+		const settings = getValidatedSettings();
+
 		updateScore(0);
-		if (lives > 1) {
+		if (lives > 0) {
 			lives--;
-			$livesDisplay.text(lives);
+			$livesDisplay.text(lives + 1);
 		} else {
 			alert("¡Juego terminado!");
 			lives = 3;
@@ -410,7 +412,7 @@
 			localStorage.removeItem('highScore');
 		}
 		Matter.Body.setPosition(pinball, { x: 465, y: 765 });
-		Matter.Body.setVelocity(pinball, { x: 0, y: -Math.abs(initVelocity) });
+		Matter.Body.setVelocity(pinball, { x: 0, y: -Math.abs(settings.velocity) });
 		Matter.Body.setAngularVelocity(pinball, 0);
 	}
 
