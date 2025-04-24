@@ -37,11 +37,6 @@
 		inputNumFriction: 0.01
 	};
 
-    // inputs for env
-	let $inputGravity = $('#inputNumGravity');
-    let $inputFriction = $('#inputNumFriction');
-	let $inputVelocity = $('#inputNumVelocity');
-
 	// score elements
 	let $currentScore = $('.current-score span');
 	let $highScore = $('.high-score span');
